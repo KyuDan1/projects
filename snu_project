@@ -1,0 +1,709 @@
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+void program();
+
+void POWERPLANT();
+void HUMAN_RES();
+void TRAFFIC();
+void LAND();
+void WATER();
+void POLITICS();
+void ECONOMY();
+
+
+void main() {
+		int restart=1;
+		while (restart == 1) {
+
+			program();
+
+			cout << "프로그램 종료는 0, 다시 시작하려면 1을 누르세요.\n\n";
+			cin >> restart;
+
+		}
+	
+
+	cout << "프로그램이 끝났습니다.";
+
+}
+
+void program() {
+	cout << "반도체 팹 입지 선정 입니다. 원하시는 평가의 번호를 누르고 enter를 눌러주세요.\n\n"
+		<< "1 전력설비\n"
+		<< "2 인적자원\n"
+		<< "3 물류교통편의성\n"
+		<< "4 부지 지대\n"
+		<< "5 용수확보/폐수처리\n"
+		<< "6 정치사회적 환경\n"
+		<< "7 주변 경제수준\n";
+	int choice;
+	cin >> choice;
+	switch (choice) {
+
+	case 1:
+		POWERPLANT();
+		break;
+	case 2:
+		HUMAN_RES();
+		break;
+	case 3:
+		TRAFFIC();
+		break;
+	case 4:
+		LAND();
+		break;
+	case 5:
+		WATER();
+		break;
+	case 6:
+		POLITICS();
+		break;
+	case 7:
+		ECONOMY();
+		break;
+	}
+
+}
+
+void POWERPLANT() {
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	int* semicon_system_nump;// 지역당 공장의 개수
+	int* semicon_systemp;
+	cout << "전력설비 평가 입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	semicon_system_nump = new int[semicon_system_local_num];
+	// 사용 끝나고 delete[] semicon_system_nump;
+
+
+	/*
+	//반도체 회사 개수 입력 받기
+	for (int i = 1; i < semicon_system_local_num + 1; i++) {
+		cout << i << "번째 지역의 반도체 회사의 개수를 입력해주세요" << "\n";
+		cin >> semicon_system_nump[i - 1];
+	}*/
+	//개수 별로 배열 만들기
+	double** semicon_array = new double* [semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_array[i] = new double[2];
+	}
+
+	//반도체회사 시가총액 입력받기
+	cout << "발전소와의 거리와 전력규모를 입력하세요.(친환경 점수는 따로 계산하세요)\n"
+		<< "사이에는 공백을 넣으세요""\n\n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		cout << i + 1 << "번째 지역의" << "발전소와의 거리, 전력규모는?\n\n";
+		cin >> semicon_array[i][0] >> semicon_array[i][1];
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << semicon_array[i][j] << "  ";
+		}
+		cout << "\n\n";
+	}
+
+	//수식 계산
+	//sum: 각 지역별 반도체회사 시가총액 합을 가진 배열
+	double* sum = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		sum[i] = static_cast<double>(semicon_array[i][1]) / semicon_array[i][0];
+	}
+
+
+
+	//합계 출력
+	cout << "전력설비 지수는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+
+	/*
+	//지수승
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	//점수추출
+	double totalsum = 0;
+
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		totalsum = totalsum + sum[i];
+	}
+
+	double* semicon_system_score = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_system_score[i] = (sum[i] / totalsum) * 80;
+	}
+	//지역별 점수 출력
+	cout << "---최종 점수--- \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+	}
+	cout << "주의!! 이 점수는 친환경 여부 20점을 더하지 않은 값입니다. 친환경 발전소라면 20점을 추가로 더해주세요. \n";
+}
+void HUMAN_RES() {
+
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	int* semicon_system_nump;// 지역당 학교의 개수
+	int* semicon_systemp;
+	cout << "인적자원 평가요소 입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	semicon_system_nump = new int[semicon_system_local_num];
+	// 사용 끝나고 delete[] semicon_system_nump;
+
+	//학교 개수 입력 받기
+	for (int i = 1; i < semicon_system_local_num + 1; i++) {
+		cout << i << "번째 지역의 공과대학의 개수를 입력해주세요" << "\n";
+		cin >> semicon_system_nump[i - 1];
+	}
+	//개수 별로 배열 만들기
+	int** semicon_array = new int* [semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_array[i] = new int[semicon_system_nump[i]];
+	}
+
+	//학교 순위 입력받기
+	cout << "각 공과대학의 순위를 입력하세요 \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		for (int j = 0; j < semicon_system_nump[i]; j++) {
+			cout << i + 1 << "번째 지역의" << j + 1 << "번째 학교의 순위를 입력하세요\n";
+			cin >> semicon_array[i][j];
+		}
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		for (int j = 0; j < semicon_system_nump[i]; j++) {
+			cout << semicon_array[i][j] << "\t";
+		}
+		cout << "\n\n";
+	}
+
+	//수식 계산
+	//sum: 각 지역별 학교 순위 역수합을 가진 배열
+	double* sum = new double[semicon_system_local_num];
+	double innersum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		for (int j = 0; j < semicon_system_nump[i]; j++) {
+			innersum = innersum + (static_cast<double>(1) / semicon_array[i][j]); //역수합
+		}
+		sum[i] = innersum;
+		innersum = 0;
+	}
+	//합계 출력
+	cout << "역수의 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	//지수승
+	/*
+		double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	//총합 구하기
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		totalsum = totalsum + sum[i];
+	}
+		//점수추출
+		double* semicon_system_score = new double[semicon_system_local_num];
+		for (int i = 0; i < semicon_system_local_num; i++) {
+			semicon_system_score[i] = (sum[i] / totalsum) * 100;
+		}
+		//지역별 점수 출력
+		cout << "---최종 점수--- \n";
+		for (int i = 0; i < semicon_system_local_num; i++) {
+			cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+		}
+	
+}
+void TRAFFIC() {
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	
+	int* semicon_systemp;
+	cout << "물류교통편의성 평가입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	
+
+	
+	//개수 별로 배열 만들기
+	double* semicon_array = new double[semicon_system_local_num];
+	
+
+	//학교 순위 입력받기
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역에서 공항까지의 거리(km)를 입력하세요 \n";
+		cin >> semicon_array[i];
+		
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+			cout << semicon_array[i]<< "\t";
+		}
+		cout << "\n\n";
+	
+
+	//수식 계산
+		double totalsum = 0;
+		for (int i = 0; i < semicon_system_local_num; i++)
+		{
+			semicon_array[i] = (static_cast<double>(1) / semicon_array[i]);
+			totalsum = totalsum + semicon_array[i];
+		}
+
+
+
+
+		/*
+	//sum: 각 지역별 학교 순위 역수합을 가진 배열
+	int innersum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		for (int j = 0; j < semicon_system_nump[i]; j++) {
+			innersum = innersum + (1 / semicon_array[i]); //역수합
+		}
+		sum[i] = innersum;
+		innersum = 0;
+	}
+	//합계 출력
+	cout << "합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	//지수승
+	/*
+		double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	
+		//점수추출
+		double* semicon_system_score = new double[semicon_system_local_num];
+		for (int i = 0; i < semicon_system_local_num; i++) {
+			semicon_system_score[i] = (semicon_array[i] / totalsum) * 100;
+		}
+		//지역별 점수 출력
+		cout << "---최종 점수--- \n";
+		for (int i = 0; i < semicon_system_local_num; i++) {
+			cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+		}
+	}
+void LAND()
+{
+	int semicon_system_local_num = 0;//판단 지역의 개수
+
+	int* semicon_systemp;
+	cout << "지대 평가입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+
+
+
+	//개수 별로 배열 만들기
+	double* semicon_array = new double[semicon_system_local_num];
+
+
+	//학교 순위 입력받기
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역의 지대를 입력하세요 \n";
+		cin >> semicon_array[i];
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << semicon_array[i] << "\t";
+	}
+	cout << "\n\n";
+
+
+	//수식 계산
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		semicon_array[i] = (static_cast<double>(1) / semicon_array[i]);
+		totalsum = totalsum + semicon_array[i];
+	}
+
+
+
+
+	/*
+//sum: 각 지역별 학교 순위 역수합을 가진 배열
+int innersum = 0;
+for (int i = 0; i < semicon_system_local_num; i++)
+{
+	for (int j = 0; j < semicon_system_nump[i]; j++) {
+		innersum = innersum + (1 / semicon_array[i]); //역수합
+	}
+	sum[i] = innersum;
+	innersum = 0;
+}
+//합계 출력
+cout << "합계는 \n";
+for (int i = 0; i < semicon_system_local_num; i++)
+{
+	cout << sum[i] << "  ";
+}
+cout << "\n\n";
+//지수승
+/*
+	double totalsum = 0;
+for (int i = 0; i < semicon_system_local_num; i++) {
+	sum[i] = pow(1.5, sum[i]);
+	totalsum = totalsum + sum[i];
+}
+//지수승 출력
+cout << "지수승 합계는 \n";
+for (int i = 0; i < semicon_system_local_num; i++)
+{
+	cout << sum[i] << "  ";
+}
+cout << "\n\n";
+*/
+
+//점수추출
+	double* semicon_system_score = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_system_score[i] = (semicon_array[i] / totalsum) * 100;
+	}
+	//지역별 점수 출력
+	cout << "---최종 점수--- \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+	}
+}
+void WATER() {
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	int* semicon_system_nump;// 지역당 공장의 개수
+	int* semicon_systemp;
+	cout << "반도체 용수 평가요소 입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	semicon_system_nump = new int[semicon_system_local_num];
+	// 사용 끝나고 delete[] semicon_system_nump;
+
+	
+	/*
+	//반도체 회사 개수 입력 받기
+	for (int i = 1; i < semicon_system_local_num + 1; i++) {
+		cout << i << "번째 지역의 반도체 회사의 개수를 입력해주세요" << "\n";
+		cin >> semicon_system_nump[i - 1];
+	}*/
+	//개수 별로 배열 만들기
+	double** semicon_array = new double* [semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_array[i] = new double[2];
+	}
+
+	//반도체회사 시가총액 입력받기
+	cout << "강까지의 거리와 수질 오염도를 순서대로 입력하세요\n"
+		<<"사이에는 공백을 넣으세요""\n\n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		cout << i + 1 << "번째 지역의" << "강까지의 거리, 수질오염도는?\n\n";
+		cin >> semicon_array[i][0]>> semicon_array[i][1];
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	cout << "거리   오염도\n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		for (int j = 0; j <2; j++) {
+			
+			cout << semicon_array[i][j] << "  ";
+		}
+		cout << "\n\n";
+	}
+
+	//수식 계산
+	//sum: 각 지역별 반도체회사 시가총액 합을 가진 배열
+	double* sum = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		sum[i] = static_cast<double>(1) /( semicon_array[i][0] * pow(1.3,semicon_array[i][1]));
+	}
+	
+
+
+	//합계 출력
+	cout << "물 지수는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	/*
+	//지수승
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	//점수추출
+	double totalsum = 0;
+		for (int i = 0; i < semicon_system_local_num; i++) {
+			totalsum = totalsum + sum[i];
+		}
+	double* semicon_system_score = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_system_score[i] = (sum[i] / totalsum) * 100;
+	}
+	//지역별 점수 출력
+	cout << "---최종 점수--- \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+	}
+
+
+
+}
+void POLITICS()
+{
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	int* semicon_system_nump;// 지역당 공장의 개수
+	int* semicon_systemp;
+	cout << "정치환경 평가요소 입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	semicon_system_nump = new int[semicon_system_local_num];
+	// 사용 끝나고 delete[] semicon_system_nump;
+
+
+	/*
+	//반도체 회사 개수 입력 받기
+	for (int i = 1; i < semicon_system_local_num + 1; i++) {
+		cout << i << "번째 지역의 반도체 회사의 개수를 입력해주세요" << "\n";
+		cin >> semicon_system_nump[i - 1];
+	}*/
+	//개수 별로 배열 만들기
+	int** semicon_array = new int* [semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_array[i] = new int[2];
+	}
+
+	//반도체회사 시가총액 입력받기
+	cout << "반도체 산업 지원금과 분쟁여부점수를 순서대로 입력하세요\n"
+		<< "사이에는 공백을 넣으세요""\n\n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		cout << i + 1 << "번째 지역의" << "지원금, 분쟁점수는?\n\n";
+		cin >> semicon_array[i][0] >> semicon_array[i][1];
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << semicon_array[i][j] << "  ";
+		}
+		cout << "\n\n";
+	}
+
+	//수식 계산
+	//sum: 각 지역별 반도체회사 시가총액 합을 가진 배열
+	/*double* sum = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		sum[i] = static_cast<double>(1) / (semicon_array[i][0] * pow(1.3, semicon_array[i][1]));
+	}
+
+
+
+	//합계 출력
+	cout << "물 지수는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	/*
+	//지수승
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	//점수추출
+	double totalsum = 0;
+
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		totalsum = totalsum + semicon_array[i][0];
+	}
+	cout << totalsum << "\n";
+	double* semicon_system_score = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_system_score[i] = ((semicon_array[i][0] / totalsum) * 50)+(semicon_array[i][1]);
+	}
+	//지역별 점수 출력
+	cout << "---최종 점수--- \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+	}
+
+
+}
+void ECONOMY() {
+	int semicon_system_local_num = 0;//판단 지역의 개수
+	double* semicon_system_nump;// 지역당 공장의 개수
+	int* semicon_systemp;
+	cout << "경제수준 평가 입니다." << "\n"
+		<< "평가할 지역의 수를 입력해주세요" << "\n";
+	cin >> semicon_system_local_num;
+
+	semicon_system_nump = new double[semicon_system_local_num];
+	// 사용 끝나고 delete[] semicon_system_nump;
+
+
+	/*
+	//반도체 회사 개수 입력 받기
+	for (int i = 1; i < semicon_system_local_num + 1; i++) {
+		cout << i << "번째 지역의 반도체 회사의 개수를 입력해주세요" << "\n";
+		cin >> semicon_system_nump[i - 1];
+	}*/
+	//개수 별로 배열 만들기
+	double** semicon_array = new double* [semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_array[i] = new double[2];
+	}
+
+	//반도체회사 시가총액 입력받기
+	cout << "1인당 명목 GDP와 국가 전체 명목 GDP를 순서대로 입력하세요\n"
+		<< "사이에는 공백을 넣으세요""\n\n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		cout << i + 1 << "번째 지역의" << "1인당 명목 GDP, 국가전체명목GDP는?\n\n";
+		cin >> semicon_array[i][0] >> semicon_array[i][1];
+
+	}
+	cout << "\n\n" << "----결과----" << "\n\n";
+	//총 데이터 출력
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << semicon_array[i][j] << "  ";
+		}
+		cout << "\n\n";
+	}
+
+	//수식 계산
+	//sum: 각 지역별 반도체회사 시가총액 합을 가진 배열
+	double* sum = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+
+		sum[i] = 0.7*semicon_array[i][0]+0.3*semicon_array[i][1];
+	}
+
+
+
+	//합계 출력
+	cout << "GDP 지수는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	
+	/*
+	//지수승
+	double totalsum = 0;
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		sum[i] = pow(1.5, sum[i]);
+		totalsum = totalsum + sum[i];
+	}
+	//지수승 출력
+	cout << "지수승 합계는 \n";
+	for (int i = 0; i < semicon_system_local_num; i++)
+	{
+		cout << sum[i] << "  ";
+	}
+	cout << "\n\n";
+	*/
+	//점수추출
+	double totalsum = 0;
+
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		totalsum = totalsum + sum[i];
+	}
+	
+	double* semicon_system_score = new double[semicon_system_local_num];
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		semicon_system_score[i] = (sum[i] / totalsum) * 100;
+	}
+	//지역별 점수 출력
+	cout << "---최종 점수--- \n";
+	for (int i = 0; i < semicon_system_local_num; i++) {
+		cout << i + 1 << "번째 지역 : " << semicon_system_score[i] << "\n";
+	}
+
+
+}
